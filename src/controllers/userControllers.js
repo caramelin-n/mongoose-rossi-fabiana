@@ -37,3 +37,62 @@ export const getAllUsers = async (req, res) => {
         });
     }
 }
+
+export const getUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await userModel.findById(id);
+        res.status(200).json({
+            ok: true,
+            data: user,
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error interno del servidor",
+        });
+    }
+}
+
+export const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { username, email, password } = req.body;
+        const user = await userModel.findByIdAndUpdate(
+            id,
+            { username, email, password },
+            { new: true }
+        )
+
+        res.status(200).json({
+            ok: true,
+            msg: "Usuario actualizado correctamente",
+            data: user,
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error interno del servidor",
+        });
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await userModel.findByIdAndDelete(id);
+        res.status(200).json({
+            ok: true,
+            msg: "Eliminado correctamente.",
+            data: user,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error interno del servidor",
+        });
+    }
+}
