@@ -2,8 +2,8 @@ import { userModel } from "../models/userModel.js";
 
 export const createUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body
-;    const user = await userModel.create({
+    const { username, email, password } = req.body;
+    const user = await userModel.create({
         username,
         email,
         password,
@@ -24,7 +24,7 @@ export const createUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const user = await userModel.find();
+        const user = await userModel.find({ isDeleted: false });
         res.status(200).json({
             ok: true,
             data: user,
@@ -41,7 +41,13 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await userModel.findById(id);
+        const user = await userModel.findOne({_id: id, isDeleted: false });
+        if(!user){
+            return res.status(404).json({
+                ok: false,
+                msg: "Usuario no encontrado."
+            });
+        }
         res.status(200).json({
             ok: true,
             data: user,
@@ -59,12 +65,30 @@ export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { username, email, password } = req.body;
-        const user = await userModel.findByIdAndUpdate(
-            id,
+        const user = await userModel.findOneAndUpdate(
+            { _id: id, isDeleted: false },
             { username, email, password },
-            { new: true }
+            { new: true },
+            //eliminación lógica o soft delete.
         )
-
+        if (!user){
+            return res.status(404).json({
+                ok: false,
+                msg: "Usuario no encontrado",
+            })
+        }
+        if(isNameUnique){
+            return res.status(400).json({
+                ok: false,
+                msg: "El username ya está siendo utilizado en la base de datos."
+            });
+        }
+        if(isEmailUnique){
+            return res.status(400).json({
+                ok: false,
+                msg: "El email ya está siendo utilizado en la base de datos."
+            });
+        }
         res.status(200).json({
             ok: true,
             msg: "Usuario actualizado correctamente",
@@ -82,7 +106,16 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await userModel.findByIdAndDelete(id);
+        const user = await userModel.findByIdAndUpdate(id,
+            { isDeleted: true },
+            { new: true }
+        );
+        if(!user){
+            return res.status(404).json({
+                ok: false,
+                msg: "Usuario no encontrado."
+            });
+        }
         res.status(200).json({
             ok: true,
             msg: "Eliminado correctamente.",

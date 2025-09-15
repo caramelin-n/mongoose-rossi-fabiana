@@ -14,7 +14,12 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    profile: { type: mongoose.Schema.Types.ObjectId, ref: "Profile" }
 },{
     versionKey: false
 });
