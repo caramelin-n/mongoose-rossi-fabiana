@@ -5,9 +5,9 @@ const wlRouter = Router();
 
 wlRouter.post("/", createWatchlist);
 wlRouter.get("/", getAllWatchlist);
-wlRouter.get("/", getWatchlistById);
-wlRouter.put("/", updateWatchlist);
-wlRouter.delete("/", deleteWatchlist);
-wlRouter.post("/api/addmovie", addMovieToUser);
+wlRouter.get("/:id", getWatchlistById);
+wlRouter.put("/:id", updateWatchlist);
+wlRouter.delete("/:id", deleteWatchlist);
+wlRouter.post("/", addMovieToUser);
 
 export default wlRouter;
