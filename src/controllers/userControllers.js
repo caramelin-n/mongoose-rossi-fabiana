@@ -69,25 +69,12 @@ export const updateUser = async (req, res) => {
             { _id: id, isDeleted: false },
             { username, email, password },
             { new: true },
-            //eliminación lógica o soft delete.
         )
         if (!user){
             return res.status(404).json({
                 ok: false,
                 msg: "Usuario no encontrado",
             })
-        }
-        if(isNameUnique){
-            return res.status(400).json({
-                ok: false,
-                msg: "El username ya está siendo utilizado en la base de datos."
-            });
-        }
-        if(isEmailUnique){
-            return res.status(400).json({
-                ok: false,
-                msg: "El email ya está siendo utilizado en la base de datos."
-            });
         }
         res.status(200).json({
             ok: true,

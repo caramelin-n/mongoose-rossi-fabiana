@@ -11,6 +11,10 @@ const directorSchema = new mongoose.Schema({
     },
     country:{
         type: String
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 },{
     versionKey: false
