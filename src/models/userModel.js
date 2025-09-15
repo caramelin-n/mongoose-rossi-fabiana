@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { profileModel } from "./ProfileModel.js";
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -23,5 +24,17 @@ const userSchema = new mongoose.Schema({
 },{
     versionKey: false
 });
+
+userSchema.pre("findByIdAndUpdate", { document: true, query: false }, async function (next) {
+    const update = this.getUpdate();
+    if (update.isDeleted === true){
+        const userId = this.getQuery()._id;
+        await profileModel.findOneAndUpdate(
+            { user: userId },
+            { isDeleted: true }
+        )
+    }
+    next();
+})
 
 export const userModel = mongoose.model("User", userSchema);

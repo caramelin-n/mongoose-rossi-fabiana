@@ -116,3 +116,17 @@ export const deleteWatchlist = async (req, res) => {
         });
     }
 }
+
+export const addMovieToUser = async (req, res) => {
+    try {
+        const { userId, movies } = req.body;
+        await userModel.findByIdAndUpdate(userId, { $addToSet: { movies: movies } });
+        await movieModel.findByIdAndUpdate(movies, { $addToSet: { users: userId } });
+        res.status(200).json({
+            ok: true,
+            msg: "Movie agregada al usuario correctamente",
+        })
+    } catch (error) {
+        
+    }
+}
